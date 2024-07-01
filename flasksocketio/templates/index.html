@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+    <title>Flask-SocketIO Test</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script type="text/javascript" charset="utf-8">
+      document.addEventListener("DOMContentLoaded", function() {
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        socket.on('connect', function() {
+          console.log('Connected');
+          document.getElementById('status').innerHTML = 'Connected';
+          socket.emit('my_event', {data: 'I\'m connected!'});
+        });
+
+        socket.on('disconnect', function() {
+          console.log('Disconnected');
+          document.getElementById('status').innerHTML = 'Disconnected';
+        });
+
+        socket.on('message', function(data) {
+          console.log(data);
+          var messagesDiv = document.getElementById('messages');
+          var newMessage = document.createElement('div');
+          newMessage.innerHTML = 'Message: ' + data.data;
+          messagesDiv.appendChild(newMessage);
+        });
+
+        socket.on('response', function(data) {
+          console.log(data);
+          var messagesDiv = document.getElementById('messages');
+          var newMessage = document.createElement('div');
+          newMessage.innerHTML = 'Response: ' + data.data;
+          messagesDiv.appendChild(newMessage);
+        });
+
+        // Send ping message every 10 seconds
+        setInterval(function() {
+          socket.emit('ping');
+        }, 10000);
+
+        socket.on('pong', function() {
+          console.log('Pong received');
+          var messagesDiv = document.getElementById('messages');
+          var newMessage = document.createElement('div');
+          newMessage.innerHTML = 'Pong received at ' + new Date().toLocaleTimeString();
+          messagesDiv.appendChild(newMessage);
+        });
+      });
+    </script>
+</head>
+<body>
+    <h1>Flask-SocketIO Test</h1>
+    <div id="status">Connecting...</div>
+    <div id="messages"></div>
+</body>
+</html>

@@ -1,0 +1,6 @@
+.env
+watchlist/data.db
+htmlcov/
+.coverage
+uwsgi.log
+*.pyc
